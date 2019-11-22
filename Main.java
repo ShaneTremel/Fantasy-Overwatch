@@ -12,6 +12,7 @@ public class Main{
             // add create new account funtion
             // password needs to be hash encrypted (part of stretch goal for mod vs user)
         }
+        Menu printMenu = new Menu();
     }
     
     public static String getInput(String message){

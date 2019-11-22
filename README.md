@@ -3,10 +3,10 @@ Group: Shane Tremel, Solomon Paprocki
 MVP
 -List of players… csv file (done)
 -Draft
-- view players, stats, and user team
-- be able to save user team
+-View players, stats, and user team
+-Be able to save user team
 -Use abstraction to hold user teams
--option to have multiple people in draft, or just solo (if solo, random select the rest of teams) 
+-Option to have multiple people in draft, or just solo (if solo, random select the rest of teams) 
 
 Stretch Goals
 -Menus made with GUI

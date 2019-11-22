@@ -8,7 +8,7 @@ Group: Shane Tremel, Solomon Paprocki
 + Draft
 + View players, stats, and user team
 + Be able to save user team
-+ Use to hold user teams
++ hold user teams
 + Option to have multiple people in draft, or just solo (if solo, random select the rest of teams) 
 
 **Stretch Goals**

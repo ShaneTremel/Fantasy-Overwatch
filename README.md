@@ -6,6 +6,7 @@ Group: Shane Tremel, Solomon Paprocki
 
 + List of players… csv file (done)
 + Draft
++ Search (sort) by name, team, etc
 + View players, stats, and user team
 + Be able to save user team
 + hold user teams

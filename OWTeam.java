@@ -1,0 +1,23 @@
+public enum OWTeam{
+    UNKNOWN,
+    REIGN,
+    UPRISING,
+    HUNTERS,
+    FUEL,
+    MAYHEM,
+    CHARGE,
+    SPARK,
+    OUTLAWS,
+    SPITFIRE,
+    GLADIATORS,
+    VALIANT,
+    EXCELSIOR,
+    ETERNAL,
+    FUSION,
+    SHOCK,
+    DYNASTY,
+    DRAGONS,
+    DEFIANT,
+    TITANS,
+    JUSTICE
+}

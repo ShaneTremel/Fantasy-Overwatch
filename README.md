@@ -4,10 +4,11 @@ Group: Shane Tremel, Solomon Paprocki
 
 **MVP**
 
-+ List of players… csv file (done)
++ List of players… csv file 
 + Draft
 + Search (sort) by name, team, etc
 + View players, stats, and user team
++ Use enums to hold the 3 roles, and the 20 ow league team
 + Be able to save user team
 + hold user teams
 + Option to have multiple people in draft, or just solo (if solo, random select the rest of teams) 

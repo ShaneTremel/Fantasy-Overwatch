@@ -9,9 +9,12 @@ Group: Shane Tremel, Solomon Paprocki, Elon Musk
 + Search (sort) by name, team, etc
 + View players, stats, and user team (Maybe polymorphism)
 + Use enums to hold the 3 roles, and the 20 ow league team
++ Interfaces for each of the 3 roles
 + Be able to save user team
 + hold user teams
 + Option to have multiple people in draft, or just solo (if solo, random select the rest of teams) 
++ Have a tournament generic class
++ Utilize a sort method that uses an anonymous class
 
 **Stretch Goals**
 

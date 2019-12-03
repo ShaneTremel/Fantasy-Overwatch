@@ -1,8 +1,9 @@
 import java.util.Scanner;
 public class Main{
     static Scanner input = new Scanner(System.in);
-    static String userInput = null;
+    static String userInput;
     static boolean RUN = true;
+    static int numberOfTeams = 8; // default value for number of teams
     public static void main(String[] args){
         System.out.println("Welcome to Fantasy OverWatch!!"); 
         userInput = getInput("Login(L) or Create Account(A)");
@@ -16,7 +17,7 @@ public class Main{
 
         while(RUN)
             menu(userInput);
-        
+
     }
 
     public static void menu(String userInput){
@@ -31,84 +32,63 @@ public class Main{
         choice = input.nextInt();
         switch(choice){
             case(1):
-                draft();
-                break;
+            draft();
+            break;
             case(2):
-                viewTeam();
-                break;
+            viewTeam();
+            break;
             case(3):
-                viewStats();
-                break;
+            viewStats();
+            break;
             case(4):
-                viewOWTeam();
-                break;
+            viewOWTeam();
+            break;
             case(5):
-                viewTopPlayers();
-                break;
+            viewTopPlayers();
+            break;
             case(6):
-                userInput = getInput("Would you like to save?('yes' or 'no')"); 
-                if(userInput.equalsIgnoreCase("y")){
-                    //write method to save
-                    System.out.println("Yikes"); // this print is just a test (delete later)
-                }
-                else if(userInput.equalsIgnoreCase("n")){
-                    System.out.println("Exiting...");
-                    RUN = false;
-                    //System.exit();
-                }
-                else{
-                    System.out.println("Please enter a valid input.");
-                    menu(userInput);
-                }
-                break;
+            exit();
+            break;
             default:
-                System.out.println("Please enter a valid input.");
-                menu(userInput);
+            System.out.println("Please enter a valid input.");
+            menu(userInput);
         }
-        // if(choice == 1)
-            // System.out.println("1");
-        // if(choice == 2)
-            // System.out.println("2");
-        // if(choice == 3)
-            // System.out.println("3");
-        // if(choice == 4)
-            // System.out.println("4");
-        // if(choice == 5)
-            // System.out.println("5");
-        // if(choice == 6)
-            // exit();
 
     }
-    
+
     public static void draft(){
-        
-    }
-    
-    public static void viewTeam(){
-        
-    }
-    
-    public static void viewStats(){
-        
-    }
-    
-    public static void viewOWTeam(){
-        
-    }
-    
-    public static void viewTopPlayers(){
-        
+        do{
+            numberOfTeams = getInt("How many teams in your league? (Min '2', Max '8')");
+        }while(!(numberOfTeams >= 2 && numberOfTeams <= 8));
+        Draft draft = new Draft(numberOfTeams);
     }
 
-    public static void exit(){
+    public static void viewTeam(){
+
+    }
+
+    public static void viewStats(){
+
+    }
+
+    public static void viewOWTeam(){
+
+    }
+
+    public static void viewTopPlayers(){
+
+    }
+
+    public static void exit(){ 
         userInput = getInput("Would you like to save?('yes' or 'no')"); 
         if(userInput.equalsIgnoreCase("y")){
             //write method to save
-            System.out.println("Yikes"); // this print is just a test (delete later)
+            System.out.println("Saving..."); // this print is just a test (delete later)
+            RUN = false;
         }
         if(userInput.equalsIgnoreCase("n")){
+            RUN = false;
             System.out.println("Exiting...");
-            //System.exit();
         }
     }
 
@@ -116,5 +96,11 @@ public class Main{
         System.out.println(message);
         String returnMessage = input.nextLine();
         return returnMessage;
+    }
+
+    public static int getInt(String message){
+        System.out.println(message);
+        int returnInt = input.nextInt();
+        return returnInt;
     }
 }

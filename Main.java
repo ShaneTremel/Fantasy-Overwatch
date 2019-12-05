@@ -1,4 +1,17 @@
 import java.util.Scanner;
+import java.util.Collections;
+import java.io.FileNotFoundException;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Comparator;
+import java.lang.Enum;
 public class Main{
     static Scanner input = new Scanner(System.in);
     static String userInput;
@@ -68,11 +81,20 @@ public class Main{
     }
 
     public static void viewStats(){
-
+        var database = loadFromFile("fantasyOverwatch.csv");
     }
 
     public static void viewOWTeam(){
-
+        var database = loadFromFile("fantasyOverwatch.csv");
+        // sort by team
+        Collections.sort(database,new Comparator<PlayerInfo>(){
+            @Override
+            public int compare(PlayerInfo p1, PlayerInfo p2){
+                return p1.getOWTeam().compareTo(p2.getOWTeam());
+            }
+        });
+        
+        print(database);
     }
 
     public static void viewTopPlayers(){
@@ -90,6 +112,55 @@ public class Main{
             RUN = false;
             System.out.println("Exiting...");
         }
+    }
+    
+    public static void print(Collection<PlayerInfo> players){
+        System.out.printf("%-15s%-15s%-9s%-8s%-10s%-10s%-17s%s%n%n","Player","Eliminations","Deaths","Role","Healing","Blocked","Preferred Hero","Team");
+        for(PlayerInfo player: players){
+            System.out.printf("%-15s%-15d%-9d%-8s%-10d%-10d%-17s%s%n",player.getName(),player.getEliminations(),player.getDeaths(),player.getRole(),player.getHealing(),player.getBlocked(),player.getHero(),player.getOWTeam()); 
+        }
+    }
+    
+    public static ArrayList<PlayerInfo> loadFromFile(String path){
+        ArrayList<PlayerInfo> owTeams = new ArrayList();
+        
+        try{
+            BufferedReader reader = new BufferedReader(new FileReader(path));
+            String line = reader.readLine();
+            while((line = reader.readLine()) != null){
+                String[] columns = line.split(",");
+                
+                String player = columns[1];
+                double elims = Double.parseDouble(columns[2]);
+                double deaths = Double.parseDouble(columns[3]);
+                Role role = Role.valueOf(columns[4]);
+                int healing = Integer.parseInt(columns[5]);
+                int blocked = Integer.parseInt(columns[6]);
+                Hero hero = Hero.valueOf(columns[7]);
+                OWTeam owTeam = OWTeam.valueOf(columns[8]);
+                
+                PlayerInfo playerInfo = new PlayerInfo(player,elims,deaths,role,healing,blocked,hero,owTeam);
+                owTeams.add(playerInfo);
+            }
+            reader.close();
+        }
+	catch (FileNotFoundException e) {
+			System.out.println("File not found");
+	}
+	catch (IOException e) {
+			System.out.println("Could not read from file");
+	}
+	catch (NumberFormatException e) {
+			System.out.println("Invalid numerical parse");
+			System.out.println(e);
+	}
+	catch (IllegalArgumentException e) {
+			System.out.println("Invalid enum parse");
+	}
+	catch (Exception e) {
+			System.out.println("Unknown exception");
+	}
+        return owTeams;
     }
 
     public static String getInput(String message){

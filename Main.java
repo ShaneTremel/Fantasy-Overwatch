@@ -88,12 +88,12 @@ public class Main{
         var database = loadFromFile("fantasyOverwatch.csv");
         // sort by team
         Collections.sort(database,new Comparator<PlayerInfo>(){
-            @Override
-            public int compare(PlayerInfo p1, PlayerInfo p2){
-                return p1.getOWTeam().compareTo(p2.getOWTeam());
-            }
-        });
-        
+                @Override
+                public int compare(PlayerInfo p1, PlayerInfo p2){
+                    return p1.getOWTeam().compareTo(p2.getOWTeam());
+                }
+            });
+
         print(database);
     }
 
@@ -113,53 +113,57 @@ public class Main{
             System.out.println("Exiting...");
         }
     }
-    
+
     public static void print(Collection<PlayerInfo> players){
         System.out.printf("%-15s%-15s%-9s%-8s%-10s%-10s%-17s%s%n%n","Player","Eliminations","Deaths","Role","Healing","Blocked","Preferred Hero","Team");
         for(PlayerInfo player: players){
-            System.out.printf("%-15s%-15d%-9d%-8s%-10d%-10d%-17s%s%n",player.getName(),player.getEliminations(),player.getDeaths(),player.getRole(),player.getHealing(),player.getBlocked(),player.getHero(),player.getOWTeam()); 
+            System.out.printf("%-15s%-15.2f%-9.2f%-8s%-10d%-10d%-17s%s%n",player.getName(),player.getEliminations(),player.getDeaths(),player.getRole(),player.getHealing(),player.getBlocked(),player.getHero(),player.getOWTeam()); 
         }
     }
-    
+
     public static ArrayList<PlayerInfo> loadFromFile(String path){
         ArrayList<PlayerInfo> owTeams = new ArrayList();
-        
+
         try{
             BufferedReader reader = new BufferedReader(new FileReader(path));
             String line = reader.readLine();
             while((line = reader.readLine()) != null){
                 String[] columns = line.split(",");
-                
-                String player = columns[1];
-                double elims = Double.parseDouble(columns[2]);
-                double deaths = Double.parseDouble(columns[3]);
-                Role role = Role.valueOf(columns[4]);
-                int healing = Integer.parseInt(columns[5]);
-                int blocked = Integer.parseInt(columns[6]);
-                Hero hero = Hero.valueOf(columns[7]);
-                OWTeam owTeam = OWTeam.valueOf(columns[8]);
-                
+
+                String player = columns[0];
+                double elims = Double.parseDouble(columns[1]);
+                double deaths = Double.parseDouble(columns[2]);
+                Role role = Role.valueOf(columns[3]);
+                int healing = Integer.parseInt(columns[4]);
+                int blocked = Integer.parseInt(columns[5]);
+                Hero hero = Hero.valueOf(columns[6]);
+                OWTeam owTeam = OWTeam.valueOf(columns[7]);
+
                 PlayerInfo playerInfo = new PlayerInfo(player,elims,deaths,role,healing,blocked,hero,owTeam);
                 owTeams.add(playerInfo);
             }
             reader.close();
         }
-	catch (FileNotFoundException e) {
-			System.out.println("File not found");
-	}
-	catch (IOException e) {
-			System.out.println("Could not read from file");
-	}
-	catch (NumberFormatException e) {
-			System.out.println("Invalid numerical parse");
-			System.out.println(e);
-	}
-	catch (IllegalArgumentException e) {
-			System.out.println("Invalid enum parse");
-	}
-	catch (Exception e) {
-			System.out.println("Unknown exception");
-	}
+        catch (FileNotFoundException e) {
+            System.out.println("File not found");
+            System.out.println(e);
+        }
+        catch (IOException e) {
+            System.out.println("Could not read from file");
+            System.out.println(e);
+        }
+        catch (NumberFormatException e) {
+            System.out.println("Invalid numerical parse");
+            System.out.println(e);
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println("Invalid enum parse");
+            System.out.println(e);
+        }
+        catch (Exception e) {
+            System.out.println("Unknown exception");
+            System.out.println(e);
+        }
         return owTeams;
     }
 

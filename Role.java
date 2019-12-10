@@ -1,3 +1,3 @@
 public enum Role{
-    UNKNOWN, DAMAGE, HEALER, TANK
+    UNKNOWN, Damage, Healer, Tank
 }

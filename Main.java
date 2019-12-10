@@ -38,10 +38,8 @@ public class Main{
         System.out.println("Please select an option:");
         System.out.println("(1) Start a League"); // should ask for number of users, then draft
         System.out.println("(2) View User Team"); // print user team
-        System.out.println("(3) View Player Stats"); // search any player on the spreadsheet 
-        System.out.println("(4) View Overwatch Teams"); // ask user to input a overwatch team - print that team
-        System.out.println("(5) View Top Players"); // let user see top players for stat of their choice
-        System.out.println("(6) Quit"); // prompt user to save
+        System.out.println("(3) View Overwatch League Players"); // search any player on the spreadsheet 
+        System.out.println("(4) Quit"); // prompt user to save
         choice = input.nextInt();
         switch(choice){
             case(1):
@@ -51,15 +49,9 @@ public class Main{
             viewTeam();
             break;
             case(3):
-            viewStats();
+            sortPlayers();
             break;
             case(4):
-            viewOWTeam();
-            break;
-            case(5):
-            viewTopPlayers();
-            break;
-            case(6):
             exit();
             break;
             default:
@@ -80,25 +72,100 @@ public class Main{
 
     }
 
-    public static void viewStats(){
-        var database = loadFromFile("fantasyOverwatch.csv");
-    }
+    public static void sortPlayers(){
+        int choice;
+        System.out.println("How would you like to sort the players?");
+        System.out.println("(1)  Alphabetical"); // should ask for number of users, then draft
+        System.out.println("(2)  Most Elims"); // sort by elims
+        System.out.println("(3)  Least Deaths"); // sort by deaths
+        System.out.println("(4)  By Role"); // sort by role
+        System.out.println("(5)  Most Healing"); // sort by healing
+        System.out.println("(6)  Most Blocked Damage"); // sort by blocked
+        System.out.println("(7)  Hero Played"); // sort by hero
+        System.out.println("(8)  Overwatch Team"); // sort by ow team
+        System.out.println("(9)  Specific Player"); // ask user for player, print that players stats
+        System.out.println("(10) Back to Menu"); // back to other menu
 
-    public static void viewOWTeam(){
+        choice = input.nextInt();
         var database = loadFromFile("fantasyOverwatch.csv");
-        // sort by team
-        Collections.sort(database,new Comparator<PlayerInfo>(){
-                @Override
-                public int compare(PlayerInfo p1, PlayerInfo p2){
-                    return p1.getOWTeam().compareTo(p2.getOWTeam());
-                }
-            });
+        switch(choice){
+            case(1): // alphabetical
+            Collections.sort(database,new Comparator<PlayerInfo>(){
+                    public int compare(PlayerInfo p1, PlayerInfo p2){
+                        return p1.getName().compareTo(p2.getName());
+                    }
+                });
+            break;
+            case(2): // elims
+            database.sort(new Comparator<PlayerInfo>(){
+                    public int compare(PlayerInfo p1, PlayerInfo p2){
+                        if(p1.getEliminations() > p2.getEliminations())
+                            return -1;
+                        if(p1.getEliminations() < p2.getEliminations())
+                            return 1;
+                        return 0;
+                    }
+                });
+            break;
+            case(3): // deaths
+            database.sort(new Comparator<PlayerInfo>(){
+                    public int compare(PlayerInfo p1, PlayerInfo p2){
+                        if(p1.getDeaths() > p2.getDeaths())
+                            return 1;
+                        if(p1.getDeaths() < p2.getDeaths())
+                            return -1;
+                        return 0;
+                    }
+                });
+            break;
+            case(4): // role
+            //userInput = getInput("Which role? (Damage,Healer,Tank)");
+            Collections.sort(database,new Comparator<PlayerInfo>(){
+                    public int compare(PlayerInfo p1, PlayerInfo p2){
+                        return p1.getRole().compareTo(p2.getRole());
+                    }
+                });
+            break;
+            case(5): // healing
+            Collections.sort(database,new Comparator<PlayerInfo>(){
+                    public int compare(PlayerInfo p1, PlayerInfo p2){
+                        return p2.getHealing() - p1.getHealing();
+                    }
+                });
+            break;
+            case(6):  // blocked
+            Collections.sort(database,new Comparator<PlayerInfo>(){
+                    public int compare(PlayerInfo p1, PlayerInfo p2){
+                        return p2.getBlocked() - p1.getBlocked();
+                    }
+                });
+            break;
+            case(7): // hero
+            Collections.sort(database,new Comparator<PlayerInfo>(){
+                    public int compare(PlayerInfo p1, PlayerInfo p2){
+                        return p1.getHero().compareTo(p2.getHero());
+                    }
+                });
+            break;
+            case(8): // sort by team
+            Collections.sort(database,new Comparator<PlayerInfo>(){
+                    public int compare(PlayerInfo p1, PlayerInfo p2){
+                        return p1.getOWTeam().compareTo(p2.getOWTeam());
+                    }
+                });
+            break;
+            case(9): // specific player
+            
+            break;
+            case(10): // exit to menu
+            menu(userInput);
+            default: // reprint sortPlayers()
+            System.out.println("Please enter a valid input.");
+            sortPlayers();
+        }
+
 
         print(database);
-    }
-
-    public static void viewTopPlayers(){
-
     }
 
     public static void exit(){ 
@@ -115,7 +182,7 @@ public class Main{
     }
 
     public static void print(Collection<PlayerInfo> players){
-        System.out.printf("%-15s%-15s%-9s%-8s%-10s%-10s%-17s%s%n%n","Player","Eliminations","Deaths","Role","Healing","Blocked","Preferred Hero","Team");
+        System.out.printf("%n%-15s%-15s%-9s%-8s%-10s%-10s%-17s%s%n%n","Player","Eliminations","Deaths","Role","Healing","Blocked","Preferred Hero","Team");
         for(PlayerInfo player: players){
             System.out.printf("%-15s%-15.2f%-9.2f%-8s%-10d%-10d%-17s%s%n",player.getName(),player.getEliminations(),player.getDeaths(),player.getRole(),player.getHealing(),player.getBlocked(),player.getHero(),player.getOWTeam()); 
         }

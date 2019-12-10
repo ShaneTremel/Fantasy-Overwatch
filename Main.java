@@ -83,7 +83,7 @@ public class Main{
         System.out.println("(6)  Most Blocked Damage"); // sort by blocked
         System.out.println("(7)  Hero Played"); // sort by hero
         System.out.println("(8)  Overwatch Team"); // sort by ow team
-        System.out.println("(9)  Specific Player"); // ask user for player, print that players stats
+        //System.out.println("(9)  Specific Player"); // ask user for player, print that players stats
         System.out.println("(10) Back to Menu"); // back to other menu
 
         choice = input.nextInt();
@@ -154,9 +154,9 @@ public class Main{
                     }
                 });
             break;
-            case(9): // specific player
+            //case(9): // specific player
             
-            break;
+            //break;
             case(10): // exit to menu
             menu(userInput);
             default: // reprint sortPlayers()

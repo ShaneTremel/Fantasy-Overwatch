@@ -1,6 +1,7 @@
 import java.util.Scanner;
 import java.util.Collections;
 import java.io.FileNotFoundException;
+import java.util.InputMismatchException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,17 +17,18 @@ public class Main{
     static Scanner input = new Scanner(System.in);
     static String userInput;
     static boolean RUN = true;
+    static boolean DRAFT = false;
     static int numberOfTeams = 8; // default value for number of teams
     public static void main(String[] args){
-        System.out.println("Welcome to Fantasy OverWatch!!"); 
-        userInput = getInput("Login(L) or Create Account(A)");
-        if(userInput.equalsIgnoreCase("l")){
-            // add login function
-        }
-        if(userInput.equalsIgnoreCase("a")){
-            // add create new account funtion
-            // password needs to be hash encrypted (part of stretch goal for mod vs user)
-        }
+        // System.out.println("Welcome to Fantasy OverWatch!!"); 
+        // userInput = getInput("Login(L) or Create Account(A)");
+        // if(userInput.equalsIgnoreCase("l")){
+        // // add login function
+        // }
+        // if(userInput.equalsIgnoreCase("a")){
+        // // add create new account funtion
+        // // password needs to be hash encrypted (part of stretch goal for mod vs user)
+        // }
 
         while(RUN)
             menu(userInput);
@@ -40,35 +42,46 @@ public class Main{
         System.out.println("(2) View User Team"); // print user team
         System.out.println("(3) View Overwatch League Players"); // search any player on the spreadsheet 
         System.out.println("(4) Quit"); // prompt user to save
-        choice = input.nextInt();
-        switch(choice){
-            case(1):
-            draft();
-            break;
-            case(2):
-            viewTeam();
-            break;
-            case(3):
-            sortPlayers();
-            break;
-            case(4):
-            exit();
-            break;
-            default:
-            System.out.println("Please enter a valid input.");
-            menu(userInput);
+        try{
+            choice = input.nextInt();
+            switch(choice){
+                case(1):
+                draft();
+                break;
+                case(2):
+                viewTeam();
+                break;
+                case(3):
+                sortPlayers();
+                break;
+                case(4):
+                exit();
+                break;
+                default:
+                System.out.println("Please enter a valid input.");
+                menu(userInput);
+            }
         }
-
+        catch(InputMismatchException e){
+            System.out.println("Error: Please enter a number (1-4)");
+            input.next();
+        }
+        catch(Exception e){
+            System.out.println("Error: Please enter a valid input");
+        }
     }
 
     public static void draft(){
-        do{
-            numberOfTeams = getInt("How many teams in your league? (Min '2', Max '8')");
-        }while(!(numberOfTeams >= 2 && numberOfTeams <= 8));
-        Draft draft = new Draft(numberOfTeams);
+        // do{
+        // numberOfTeams = getInt("How many teams in your league? (Min '2', Max '8')");
+        // }while(!(numberOfTeams >= 2 && numberOfTeams <= 8));
+        DRAFT = true;
+        Draft draft = new Draft();
     }
 
     public static void viewTeam(){
+        if(DRAFT == false)
+            System.out.println("You must draft a team before you can view your team!");
 
     }
 
@@ -84,7 +97,7 @@ public class Main{
         System.out.println("(7)  Hero Played"); // sort by hero
         System.out.println("(8)  Overwatch Team"); // sort by ow team
         //System.out.println("(9)  Specific Player"); // ask user for player, print that players stats
-        System.out.println("(10) Back to Menu"); // back to other menu
+        System.out.println("(9)  Back to Menu"); // back to other menu
 
         choice = input.nextInt();
         var database = loadFromFile("fantasyOverwatch.csv");
@@ -155,30 +168,21 @@ public class Main{
                 });
             break;
             //case(9): // specific player
-            
+
             //break;
-            case(10): // exit to menu
+            case(9): // exit to menu
             menu(userInput);
             default: // reprint sortPlayers()
             System.out.println("Please enter a valid input.");
             sortPlayers();
         }
 
-
         print(database);
     }
 
     public static void exit(){ 
-        userInput = getInput("Would you like to save?('yes' or 'no')"); 
-        if(userInput.equalsIgnoreCase("y")){
-            //write method to save
-            System.out.println("Saving..."); // this print is just a test (delete later)
-            RUN = false;
-        }
-        if(userInput.equalsIgnoreCase("n")){
-            RUN = false;
-            System.out.println("Exiting...");
-        }
+        RUN = false;
+        System.out.println("Progress Saved... Exiting.");
     }
 
     public static void print(Collection<PlayerInfo> players){

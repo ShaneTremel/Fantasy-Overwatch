@@ -1,3 +1,4 @@
+
 import java.util.Scanner;
 import java.util.Collections;
 import java.io.FileNotFoundException;
@@ -17,6 +18,9 @@ public class Main{
     private static boolean RUN = true;
     public static boolean DRAFTING = false;
     private static int draftCount = 6;
+    private static int draftCountTank = 2;
+    private static int draftCountDamage = 2;
+    private static int draftCountHealer = 2;
     private static boolean drafted = false;
     private static int numberOfTeams = 8; // default value for number of teams
     public static void main(String[] args){
@@ -40,7 +44,7 @@ public class Main{
                     menu(input.nextLine());
                     continue;
                 }
-                System.out.println("Which player would you like to draft?");            
+                System.out.printf("Which player would you like to draft? (%d more tank, %d more healer, %d more damage)%n",draftCountTank, draftCountHealer, draftCountDamage);            
                 draft(input.nextLine());
             }
             catch(InputMismatchException e){
@@ -48,7 +52,7 @@ public class Main{
                 input.next();
             }
             // catch(Exception e){
-                // System.out.println("Please enter a valid input...");
+            // System.out.println("Please enter a valid input...");
             // }        
         }
     }
@@ -56,9 +60,13 @@ public class Main{
     public static void menu(String choice){
         switch(choice){
             case("1"):
-            drafted = true;
-            DRAFTING = true;
-            print(database);
+            if(drafted){
+                System.out.println("You already drafted!");
+            }else{
+                drafted = true;
+                DRAFTING = true;
+                print(database);
+            }
             break;
             case("2"):
             viewTeam();
@@ -75,16 +83,47 @@ public class Main{
     }
 
     public static void draft(String playerName){
-        boolean successfulAdd = false;
-        for(PlayerInfo p : database){
+        boolean validPlayer = false;
+        for(PlayerInfo p : userTeam){
             if (playerName.equalsIgnoreCase(p.getName())){
-                userTeam.add(p);
-                System.out.printf("%s has been added to your team!%n", p.getName());
-                draftCount--;   
-                successfulAdd = true;
+                System.out.printf("%s is already on your team!%n", p.getName()); 
+                return;
             }
         }
-        if(!successfulAdd)
+        for(PlayerInfo p : database){
+            if (playerName.equalsIgnoreCase(p.getName())){
+                validPlayer = true;
+                switch(p.getRole()){
+                    case Healer:
+                    if(draftCountHealer > 0){
+                        userTeam.add(p);
+                        System.out.printf("%s has been added to your team!%n", p.getName());
+                        draftCountHealer--; 
+                        draftCount--;
+                    }else{System.out.println("You already have two healers!");}
+                    break;
+                    case Damage:
+                    if(draftCountDamage > 0){
+                        userTeam.add(p);
+                        System.out.printf("%s has been added to your team!%n", p.getName());
+                        draftCountDamage--;   
+                        draftCount--;
+                    }else{System.out.println("You already have two damages!");}
+                    break;
+                    case Tank:
+                    if(draftCountTank > 0){
+                        userTeam.add(p);
+                        System.out.printf("%s has been added to your team!%n", p.getName());
+                        draftCountTank--;   
+                        draftCount--;
+                    }else{System.out.println("You already have two tanks!");}
+                    break;
+                    default:
+                    System.out.println("This should not happen");
+                }
+            }
+        }
+        if(!validPlayer)
             System.out.println("Not a valid player!");
         // switch(playerName){
         // case("pi"):

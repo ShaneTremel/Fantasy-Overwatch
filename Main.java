@@ -14,6 +14,7 @@ public class Main{
     private static Scanner input = new Scanner(System.in);
     private static List<PlayerInfo> database = new ArrayList<PlayerInfo>(loadFromFile("fantasyOverwatch.csv"));
     private static List<PlayerInfo> userTeam = new ArrayList<PlayerInfo>(6);
+    private static List<PlayerInfo> playerSearch = new ArrayList<PlayerInfo>();
     private static String userInput;
     private static boolean RUN = true;
     public static boolean DRAFTING = false;
@@ -48,7 +49,7 @@ public class Main{
                 draft(input.nextLine());
             }
             catch(InputMismatchException e){
-                System.out.println("Please enter a NUMBER (1-4)");
+                System.out.println("Please enter a valid NUMBER");
                 input.next();
             }
             // catch(Exception e){
@@ -163,11 +164,12 @@ public class Main{
         System.out.println("(6)  Most Blocked Damage"); // sort by blocked
         System.out.println("(7)  Hero Played"); // sort by hero
         System.out.println("(8)  Overwatch Team"); // sort by ow team
-        //System.out.println("(9)  Specific Player"); // ask user for player, print that players stats
+        System.out.println("(9)  Specific Player"); // ask user for player, print that players stats
 
         //I don't think this should be an option for this method
         //System.out.println("(9)  Back to Menu"); // back to other menu
-
+        
+        boolean printDatabase = true;
         choice = input.nextInt();
         switch(choice){
             case(1): // alphabetical
@@ -235,8 +237,18 @@ public class Main{
                     }
                 });
             break;
-            //case(9): // specific player
-            //break;
+            case(9): // specific player
+            printDatabase = false;
+            System.out.println("Enter a player: ");
+            String playerName = input.next();
+            for(PlayerInfo p : database){
+                if (playerName.equalsIgnoreCase(p.getName())){
+                    playerSearch.add(p);
+                }
+            }
+            print(playerSearch);
+            System.out.println();
+            break;
 
             //Dont think this option is neccesary
             //case(9): // exit to menu
@@ -247,7 +259,8 @@ public class Main{
             sortPlayers();
         }
 
-        print(database);
+        if(printDatabase)
+            print(database);
     }
 
     public static void exit(){ 

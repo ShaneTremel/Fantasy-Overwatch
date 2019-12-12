@@ -52,6 +52,8 @@ public final class PlayerInfo implements Comparable<PlayerInfo>{
     
     @Override
     public String toString(){
-        return String.format("%s(%s): Elims: %d%tDeaths:%d%tHealing:%d%tDamage Blocked:%d%tCurrent Team:%d%n",name,role,eliminations,deaths,healing,blocked,owTeam);
+        return name;
+        //This toString does not work, so I commented it out.  We do not use it anyways.
+        //return String.format("%s(%s): Elims: %d%tDeaths:%d%tHealing:%d%tDamage Blocked:%d%tCurrent Team:%s%n",name,role,eliminations,deaths,healing,blocked,owTeam);
     }
 }

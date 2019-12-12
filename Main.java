@@ -7,18 +7,18 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.ArrayList;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Comparator;
-import java.lang.Enum;
+import java.util.List;
 public class Main{
-    static Scanner input = new Scanner(System.in);
-    static String userInput;
-    static boolean RUN = true;
-    static boolean DRAFT = false;
-    static int numberOfTeams = 8; // default value for number of teams
+    private static Scanner input = new Scanner(System.in);
+    private static List<PlayerInfo> database = new ArrayList<PlayerInfo>(loadFromFile("fantasyOverwatch.csv"));
+    private static List<PlayerInfo> userTeam = new ArrayList<PlayerInfo>(6);
+    private static String userInput;
+    private static boolean RUN = true;
+    public static boolean DRAFTING = false;
+    private static int draftCount = 6;
+    private static boolean drafted = false;
+    private static int numberOfTeams = 8; // default value for number of teams
     public static void main(String[] args){
         // System.out.println("Welcome to Fantasy OverWatch!!"); 
         // userInput = getInput("Login(L) or Create Account(A)");
@@ -29,58 +29,86 @@ public class Main{
         // // add create new account funtion
         // // password needs to be hash encrypted (part of stretch goal for mod vs user)
         // }
-
-        while(RUN)
-            menu(userInput);
-
+        while(RUN){
+            try{
+                if (!DRAFTING){
+                    System.out.println("Please select an option:");
+                    System.out.println("(1) Start a League"); // should ask for number of users, then draft
+                    System.out.println("(2) View User Team"); // print user team
+                    System.out.println("(3) View Overwatch League Players"); // search any player on the spreadsheet 
+                    System.out.println("(4) Quit"); // prompt user to save 
+                    menu(input.nextLine());
+                    continue;
+                }
+                System.out.println("Which player would you like to draft?");            
+                draft(input.nextLine());
+            }
+            catch(InputMismatchException e){
+                System.out.println("Please enter a NUMBER (1-4)");
+                input.next();
+            }
+            // catch(Exception e){
+                // System.out.println("Please enter a valid input...");
+            // }        
+        }
     }
 
-    public static void menu(String userInput){
-        int choice;
-        System.out.println("Please select an option:");
-        System.out.println("(1) Start a League"); // should ask for number of users, then draft
-        System.out.println("(2) View User Team"); // print user team
-        System.out.println("(3) View Overwatch League Players"); // search any player on the spreadsheet 
-        System.out.println("(4) Quit"); // prompt user to save
-        try{
-            choice = input.nextInt();
-            switch(choice){
-                case(1):
-                draft();
-                break;
-                case(2):
-                viewTeam();
-                break;
-                case(3):
-                sortPlayers();
-                break;
-                case(4):
-                exit();
-                break;
-                default:
-                System.out.println("Please enter a valid input.");
-                menu(userInput);
+    public static void menu(String choice){
+        switch(choice){
+            case("1"):
+            drafted = true;
+            DRAFTING = true;
+            print(database);
+            break;
+            case("2"):
+            viewTeam();
+            break;
+            case("3"):
+            sortPlayers();
+            break;
+            case("4"):
+            exit();
+            break;
+            default:
+            System.out.println("Please enter a valid input. (1-4)");
+        }
+    }
+
+    public static void draft(String playerName){
+        boolean successfulAdd = false;
+        for(PlayerInfo p : database){
+            if (playerName.equalsIgnoreCase(p.getName())){
+                userTeam.add(p);
+                System.out.printf("%s has been added to your team!%n", p.getName());
+                draftCount--;   
+                successfulAdd = true;
             }
         }
-        catch(InputMismatchException e){
-            System.out.println("Error: Please enter a number (1-4)");
-            input.next();
-        }
-        catch(Exception e){
-            System.out.println("Error: Please enter a valid input");
-        }
+        if(!successfulAdd)
+            System.out.println("Not a valid player!");
+        // switch(playerName){
+        // case("pi"):
+        // System.out.println("pi has been added to your team");
+        // draftCount--;
+        // break;
+        // default:
+        // System.out.println("Please select a player from the list.");
+        // }
+        if(draftCount<=0)
+            DRAFTING = false;
     }
 
-    public static void draft(){
-        // do{
-        // numberOfTeams = getInt("How many teams in your league? (Min '2', Max '8')");
-        // }while(!(numberOfTeams >= 2 && numberOfTeams <= 8));
-        DRAFT = true;
-        Draft draft = new Draft();
-    }
+    //public static void draft(){
+    // do{
+    // numberOfTeams = getInt("How many teams in your league? (Min '2', Max '8')");
+    // }while(!(numberOfTeams >= 2 && numberOfTeams <= 8));
+    //Draft draft = new Draft();
+    //}
 
     public static void viewTeam(){
-        if(DRAFT == false)
+        if(drafted == true)
+            print(userTeam);
+        else
             System.out.println("You must draft a team before you can view your team!");
 
     }
@@ -97,10 +125,11 @@ public class Main{
         System.out.println("(7)  Hero Played"); // sort by hero
         System.out.println("(8)  Overwatch Team"); // sort by ow team
         //System.out.println("(9)  Specific Player"); // ask user for player, print that players stats
-        System.out.println("(9)  Back to Menu"); // back to other menu
+
+        //I don't think this should be an option for this method
+        //System.out.println("(9)  Back to Menu"); // back to other menu
 
         choice = input.nextInt();
-        var database = loadFromFile("fantasyOverwatch.csv");
         switch(choice){
             case(1): // alphabetical
             Collections.sort(database,new Comparator<PlayerInfo>(){
@@ -168,10 +197,12 @@ public class Main{
                 });
             break;
             //case(9): // specific player
-
             //break;
-            case(9): // exit to menu
-            menu(userInput);
+
+            //Dont think this option is neccesary
+            //case(9): // exit to menu
+            //menu(userInput);
+
             default: // reprint sortPlayers()
             System.out.println("Please enter a valid input.");
             sortPlayers();

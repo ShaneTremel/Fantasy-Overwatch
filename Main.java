@@ -24,15 +24,12 @@ public class Main{
     private static int draftCountHealer = 2;
     private static int numberOfTeams = 8; // default value for number of teams
     public static void main(String[] args){
-        // System.out.println("Welcome to Fantasy OverWatch!!"); 
-        // userInput = getInput("Login(L) or Create Account(A)");
-        // if(userInput.equalsIgnoreCase("l")){
-        // // add login function
-        // }
-        // if(userInput.equalsIgnoreCase("a")){
-        // // add create new account funtion
-        // // password needs to be hash encrypted (part of stretch goal for mod vs user)
-        // }
+        System.out.println("Welcome to Fantasy OverWatch!!"); 
+        userInput = getInput("Do you already have a team?(Y or N)");
+        if(userInput.equalsIgnoreCase("y")){
+            userInput = getInput("What is your team name?");
+            user = SaveFileReader.readFromFile(userInput+".csv",database);
+        }
         while(RUN){
             try{
                 if (!DRAFTING){
@@ -137,14 +134,7 @@ public class Main{
             user = new User(userName,userTeam);
         }
     }
-
-    //public static void draft(){
-    // do{
-    // numberOfTeams = getInt("How many teams in your league? (Min '2', Max '8')");
-    // }while(!(numberOfTeams >= 2 && numberOfTeams <= 8));
-    //Draft draft = new Draft();
-    //}
-
+    
     public static void viewTeam(){
         if(user != null){
             System.out.printf("%n%s%n",user.getUserName());
@@ -264,7 +254,9 @@ public class Main{
 
     public static void exit(){ 
         RUN = false;
-        System.out.println("Progress Saved... Exiting.");
+        if(user!=null)
+            SaveFileWriter.writeToFile(user.getUserName()+".csv",user);
+        System.out.println("...Exiting.");
     }
 
     public static void print(Collection<PlayerInfo> players){

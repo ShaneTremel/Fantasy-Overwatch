@@ -1,4 +1,3 @@
-
 import java.util.Scanner;
 import java.util.Collections;
 import java.io.FileNotFoundException;
@@ -11,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 public class Main{
+    static User user;
     private static Scanner input = new Scanner(System.in);
     private static List<PlayerInfo> database = new ArrayList<PlayerInfo>(loadFromFile("fantasyOverwatch.csv"));
     private static List<PlayerInfo> userTeam = new ArrayList<PlayerInfo>(6);
@@ -22,7 +22,6 @@ public class Main{
     private static int draftCountTank = 2;
     private static int draftCountDamage = 2;
     private static int draftCountHealer = 2;
-    private static boolean drafted = false;
     private static int numberOfTeams = 8; // default value for number of teams
     public static void main(String[] args){
         // System.out.println("Welcome to Fantasy OverWatch!!"); 
@@ -52,21 +51,20 @@ public class Main{
                 System.out.println("Please enter a valid NUMBER");
                 input.next();
             }
-            // catch(Exception e){
-            // System.out.println("Please enter a valid input...");
-            // }        
+            catch(Exception e){
+                System.out.println("Please enter a valid input...");
+            }        
         }
     }
 
     public static void menu(String choice){
         switch(choice){
             case("1"):
-            if(drafted){
-                System.out.println("You already drafted!");
-            }else{
-                drafted = true;
+            if(user==null){
                 DRAFTING = true;
                 print(database);
+            }else{
+                System.out.println("You already drafted!");
             }
             break;
             case("2"):
@@ -126,16 +124,18 @@ public class Main{
         }
         if(!validPlayer)
             System.out.println("Not a valid player!");
-        // switch(playerName){
-        // case("pi"):
-        // System.out.println("pi has been added to your team");
-        // draftCount--;
-        // break;
-        // default:
-        // System.out.println("Please select a player from the list.");
-        // }
-        if(draftCount<=0)
+        if(draftCount<=0){
             DRAFTING = false;
+            String userName = "";
+            try{
+                System.out.println("What is your team name?");
+                userName = input.nextLine();
+            }
+            catch(Exception e){
+                System.out.println("Please enter a valid input...");
+            }    
+            user = new User(userName,userTeam);
+        }
     }
 
     //public static void draft(){
@@ -146,11 +146,10 @@ public class Main{
     //}
 
     public static void viewTeam(){
-        if(drafted == true)
-            print(userTeam);
-        else
-            System.out.println("You must draft a team before you can view your team!");
-
+        if(user != null){
+            System.out.printf("%n%s%n",user.getUserName());
+            print(user.getTeam());
+        }else{System.out.println("You must draft a team before you can view your team!");}
     }
 
     public static void sortPlayers(){
@@ -168,7 +167,7 @@ public class Main{
 
         //I don't think this should be an option for this method
         //System.out.println("(9)  Back to Menu"); // back to other menu
-        
+
         boolean printDatabase = true;
         choice = input.nextInt();
         switch(choice){

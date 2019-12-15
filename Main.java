@@ -9,12 +9,16 @@ import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 public class Main{
     static User user;
     private static Scanner input = new Scanner(System.in);
     private static List<PlayerInfo> database = new ArrayList<PlayerInfo>(loadFromFile("fantasyOverwatch.csv"));
     private static List<PlayerInfo> userTeam = new ArrayList<PlayerInfo>(6);
+    private static List<PlayerInfo> draftingDatabase = new ArrayList<PlayerInfo>(loadFromFile("fantasyOverwatch.csv"));
     private static List<PlayerInfo> playerSearch = new ArrayList<PlayerInfo>();
+    private static PlayerInfo chosenPlayer;
+    private static String message = "";
     private static String userInput;
     private static boolean RUN = true;
     public static boolean DRAFTING = false;
@@ -41,6 +45,12 @@ public class Main{
                     menu(input.nextLine());
                     continue;
                 }
+                if(draftCount != 6){
+                    if(draftingDatabase.remove(chosenPlayer)){
+                        print(draftingDatabase);
+                    }
+                }
+                System.out.println(message);
                 System.out.printf("Which player would you like to draft? (%d more tank, %d more healer, %d more damage)%n",draftCountTank, draftCountHealer, draftCountDamage);            
                 draft(input.nextLine());
             }
@@ -49,7 +59,7 @@ public class Main{
                 input.next();
             }
             catch(Exception e){
-                System.out.println("Please enter a valid input...");
+                System.out.println("Please enter a valid input..."+e);
             }        
         }
     }
@@ -82,37 +92,40 @@ public class Main{
         boolean validPlayer = false;
         for(PlayerInfo p : userTeam){
             if (playerName.equalsIgnoreCase(p.getName())){
-                System.out.printf("%s is already on your team!%n", p.getName()); 
+                message = p.getName()+" is already on your team!";
                 return;
             }
         }
-        for(PlayerInfo p : database){
+        for(PlayerInfo p : draftingDatabase){
             if (playerName.equalsIgnoreCase(p.getName())){
                 validPlayer = true;
                 switch(p.getRole()){
                     case Healer:
                     if(draftCountHealer > 0){
                         userTeam.add(p);
-                        System.out.printf("%s has been added to your team!%n", p.getName());
+                        chosenPlayer = p;
+                        message = p.getName()+" has been added to your team!";
                         draftCountHealer--; 
                         draftCount--;
-                    }else{System.out.println("You already have two healers!");}
+                    }else{message = "You already have two healers!";}
                     break;
                     case Damage:
                     if(draftCountDamage > 0){
                         userTeam.add(p);
-                        System.out.printf("%s has been added to your team!%n", p.getName());
+                        chosenPlayer = p;
+                        message = p.getName()+" has been added to your team!";
                         draftCountDamage--;   
                         draftCount--;
-                    }else{System.out.println("You already have two damages!");}
+                    }else{message = "You already have two damages!";}
                     break;
                     case Tank:
                     if(draftCountTank > 0){
                         userTeam.add(p);
-                        System.out.printf("%s has been added to your team!%n", p.getName());
+                        chosenPlayer = p;
+                        message = p.getName()+" has been added to your team!";
                         draftCountTank--;   
                         draftCount--;
-                    }else{System.out.println("You already have two tanks!");}
+                    }else{message = "You already have two tanks!";}
                     break;
                     default:
                     System.out.println("This should not happen");
@@ -120,7 +133,7 @@ public class Main{
             }
         }
         if(!validPlayer)
-            System.out.println("Not a valid player!");
+            message = "Not a valid player!";
         if(draftCount<=0){
             DRAFTING = false;
             String userName = "";
@@ -134,7 +147,7 @@ public class Main{
             user = new User(userName,userTeam);
         }
     }
-    
+
     public static void viewTeam(){
         if(user != null){
             System.out.printf("%n%s%n",user.getUserName());

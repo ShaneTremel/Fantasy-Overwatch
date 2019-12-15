@@ -15,9 +15,9 @@ public class SaveFileReader{
             reader = new BufferedReader(new FileReader(path)); String line = reader.readLine();
             String[] data = line.split(",");
             userName = data[0];
-            for(String n : data){
+            for(int i =1; i<7; i++){
                 for(PlayerInfo p : database){
-                    if (n.equalsIgnoreCase(p.getName())){
+                    if (data[i].equalsIgnoreCase(p.getName())){
                         userTeam.add(p);
                     }
                 }

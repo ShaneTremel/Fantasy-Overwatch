@@ -19,7 +19,7 @@ public class SaveFileWriter{
         }
         try{ 
             file.createNewFile();
-            writer = new BufferedWriter(new FileWriter(path, true)); 
+            writer = new BufferedWriter(new FileWriter(path, false)); 
             String line = String.join(",",user.getUserName(),userTeamNames.get(0),userTeamNames.get(1),userTeamNames.get(2),userTeamNames.get(3),userTeamNames.get(4),userTeamNames.get(5));
             writer.write(line);
             writer.close();

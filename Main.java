@@ -29,6 +29,9 @@ public class Main{
     private static int draftCountDamage = 2;
     private static int draftCountHealer = 2;
     private static int numberOfTeams = 8; // default value for number of teams
+    private static int win = 0;
+    private static int lose = 0; // win/lose/tie used to create a record for your team
+    private static int tie = 0;
     public static void main(String[] args){
         System.out.println("Welcome to Fantasy OverWatch!!"); 
         userInput = getInput("Do you already have a team?(Y or N)");
@@ -43,7 +46,8 @@ public class Main{
                     System.out.println("(1) Start a League"); // should ask for number of users, then draft
                     System.out.println("(2) View User Team"); // print user team
                     System.out.println("(3) View Overwatch League Players"); // search any player on the spreadsheet 
-                    System.out.println("(4) Quit"); // prompt user to save 
+                    System.out.println("(4) Play Game");
+                    System.out.println("(5) Quit"); // prompt user to save 
                     menu(input.nextLine());
                     continue;
                 }
@@ -101,6 +105,11 @@ public class Main{
             sortPlayers();
             break;
             case("4"):
+            if(user != null){
+                simulateGame();
+            }else{System.out.println("You must draft a team before you can play a game!");}
+            break;            
+            case("5"):
             exit();
             break;
             default:
@@ -276,6 +285,42 @@ public class Main{
             print(database);
     }
 
+    public static void simulateGame(){
+        Random r = new Random();
+        // scores for userTeam players
+        int p1 = r.nextInt(40)+1; // assume p1 and p2 are damage
+        int p2 = r.nextInt(40)+1;
+        int p3 = r.nextInt(40)+1; // assume p3 and p4 are healers
+        int p4 = r.nextInt(40)+1;
+        int p5 = r.nextInt(40)+1; // assume p5 and p6 are tanks
+        int p6 = r.nextInt(40)+1;
+        // scores for opponents players
+        int c1 = r.nextInt(40)+1;
+        int c2 = r.nextInt(40)+1;
+        int c3 = r.nextInt(40)+1;
+        int c4 = r.nextInt(40)+1;
+        int c5 = r.nextInt(40)+1;
+        int c6 = r.nextInt(40)+1;
+        
+        //int[] playerScores = new int[]{p1,p2,p3,p4,p5,p6};
+        int userPointsScored = p1 + p2 + p3 + p4 + p5 + p6;
+        int oppPointsScored = c1 + c2 + c3 + c4 + c5 + c6;
+        System.out.println("Your team scored: "+userPointsScored+"\nOpponent team scored: "+oppPointsScored);
+        if(userPointsScored > oppPointsScored){
+            System.out.println("You win!!");
+            win++;
+        }
+        else if(userPointsScored < oppPointsScored){
+            System.out.println("You lost!!");
+            lose++;
+        }
+        else{
+            System.out.println("You tied!!");
+            tie++;
+        }
+        System.out.printf("User Record:\t%d-%d-%d%n",win,lose,tie);
+    }    
+    
     public static void exit(){ 
         RUN = false;
         if(user!=null)

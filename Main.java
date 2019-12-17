@@ -18,7 +18,9 @@ public class Main{
     private static List<PlayerInfo> draftingDatabase = new ArrayList<PlayerInfo>(loadFromFile("fantasyOverwatch.csv"));
     private static List<PlayerInfo> playerSearch = new ArrayList<PlayerInfo>();
     private static PlayerInfo chosenPlayer;
+    private static List<User> users = new ArrayList<User>();
     private static String message = "";
+    private static int numberOfUsers = 0;
     private static String userInput;
     private static boolean RUN = true;
     public static boolean DRAFTING = false;
@@ -69,6 +71,24 @@ public class Main{
             case("1"):
             if(user==null){
                 DRAFTING = true;
+                while(numberOfUsers < 1 || numberOfUsers > 23){
+                    System.out.println("Up to 23 players are allowed.");
+                    userInput = getInput("How many people are drafting?");
+                    try{
+                        numberOfUsers = Integer.parseInt(userInput);
+                    }
+                    catch(Exception e){
+                        System.out.println("Not a valid number.");
+                    }
+                }
+                for(int i = 1; i < numberOfUsers+1; i++){
+                    String userName = "";
+                    System.out.printf("User %d, What is your team name?%n",i);
+                    users.add(new User(input.nextLine()));
+                }
+                for(User u : users){
+                    System.out.println(u.getUserName());
+                }
                 print(database);
             }else{
                 System.out.println("You already drafted!");
@@ -136,15 +156,6 @@ public class Main{
             message = "Not a valid player!";
         if(draftCount<=0){
             DRAFTING = false;
-            String userName = "";
-            try{
-                System.out.println("What is your team name?");
-                userName = input.nextLine();
-            }
-            catch(Exception e){
-                System.out.println("Please enter a valid input...");
-            }    
-            user = new User(userName,userTeam);
         }
     }
 

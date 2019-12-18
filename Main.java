@@ -43,7 +43,8 @@ public class Main{
                     System.out.println("(2) View User Team"); // print user team
                     System.out.println("(3) View Overwatch League Players"); // search any player on the spreadsheet 
                     System.out.println("(4) Play Game");
-                    System.out.println("(5) Quit"); // prompt user to save 
+                    System.out.println("(5) Start a Tournament");
+                    System.out.println("(6) Quit"); // prompt user to save 
                     menu(input.nextLine());
                     continue;
                 }
@@ -153,8 +154,12 @@ public class Main{
             if(user != null){
                 simulateGame();
             }else{System.out.println("You must draft a team before you can play a game!");}
-            break;            
+            break;  
             case("5"):
+            if(user != null){
+                Tournament t = new Tournament(RUN);
+            }else{System.out.println("You must draft a team before you can play a game!");}
+            case("6"):
             exit();
             break;
             default:
@@ -194,9 +199,6 @@ public class Main{
         System.out.println("(8)  Overwatch Team"); // sort by ow team
         System.out.println("(9)  Specific Player"); // ask user for player, print that players stats
 
-        //I don't think this should be an option for this method
-        //System.out.println("(9)  Back to Menu"); // back to other menu
-
         boolean printDatabase = true;
         choice = input.nextInt();
         switch(choice){
@@ -230,7 +232,6 @@ public class Main{
                 });
             break;
             case(4): // role
-            //userInput = getInput("Which role? (Damage,Healer,Tank)");
             Collections.sort(database,new Comparator<PlayerInfo>(){
                     public int compare(PlayerInfo p1, PlayerInfo p2){
                         return p1.getRole().compareTo(p2.getRole());
@@ -277,11 +278,6 @@ public class Main{
             print(playerSearch);
             System.out.println();
             break;
-
-            //Dont think this option is neccesary
-            //case(9): // exit to menu
-            //menu(userInput);
-
             default: // reprint sortPlayers()
             System.out.println("Please enter a valid input.");
             sortPlayers();
@@ -341,7 +337,7 @@ public class Main{
     public static void print(Collection<PlayerInfo> players){
         System.out.printf("%n%-15s%-15s%-9s%-8s%-10s%-10s%-17s%s%n%n","Player","Eliminations","Deaths","Role","Healing","Blocked","Preferred Hero","Team");
         for(PlayerInfo player: players){
-            System.out.printf("%-15s%-15.2f%-9.2f%-8s%-10d%-10d%-17s%s%n",player.getName(),player.getEliminations(),player.getDeaths(),player.getRole(),player.getHealing(),player.getBlocked(),player.getHero(),player.getOWTeam()); 
+                System.out.printf("%-15s%-15.2f%-9.2f%-8s%-10d%-10d%-17s%s%n",player.getName(),player.getEliminations(),player.getDeaths(),player.getRole(),player.getHealing(),player.getBlocked(),player.getHero(),player.getOWTeam()); 
         }
     }
 

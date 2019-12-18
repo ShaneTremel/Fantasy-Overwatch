@@ -32,8 +32,29 @@ public class Main{
         System.out.println("Welcome to Fantasy OverWatch!!"); 
         userInput = getInput("Do you already have a team?(Y or N)");
         if(userInput.equalsIgnoreCase("y")){
-            userInput = getInput("What is your team name?");
-            user = SaveFileReader.readFromFile(userInput+".csv",database);
+            while(numberOfUsers < 1 || numberOfUsers > 22){
+                userInput = getInput("How many people were in your league?");
+                try{
+                    numberOfUsers = Integer.parseInt(userInput);
+                }
+                catch(Exception e){
+                    System.out.println("Not a valid number.");
+                }
+            }
+            for(int i = 0; i < numberOfUsers; i++){
+                boolean loop = true;
+                while(loop){
+                    String userName = "";
+                    System.out.printf("What was the name of Team %d?%n",i+1);
+                    userInput = input.nextLine();
+                    user = SaveFileReader.readFromFile(userInput+".csv",database);
+                    if(user!=null){
+                        users.add(user);
+                        loop = false;
+                    }
+                }
+            }
+
         }
         while(RUN){
             try{
@@ -79,8 +100,8 @@ public class Main{
             case("1"):
             if(users.size() == 0){
                 DRAFTING = true;
-                while(numberOfUsers < 1 || numberOfUsers > 23){
-                    System.out.println("Up to 23 players are allowed.");
+                while(numberOfUsers < 1 || numberOfUsers > 22){
+                    System.out.println("Up to 22 players are allowed.");
                     userInput = getInput("How many people are drafting?");
                     try{
                         numberOfUsers = Integer.parseInt(userInput);

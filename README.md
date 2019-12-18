@@ -12,7 +12,7 @@ Group: Shane Tremel, Solomon Paprocki, Elon Musk
 + Interfaces for each of the 3 roles --> Interface for all users (regular + mod) ✔
 + Be able to save user team ✔
 + hold user teams ✔
-+ Option to have multiple people in draft, or just solo (if solo, random select the rest of teams)  X
++ Option to have multiple people in draft, or just solo (if solo, random select the rest of teams)  ✔
 + Have a tournament generic class X
 + Utilize a sort method that uses an anonymous class ✔
 

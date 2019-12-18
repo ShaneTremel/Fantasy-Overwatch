@@ -24,11 +24,7 @@ public class Main{
     private static String userInput;
     private static boolean RUN = true;
     public static boolean DRAFTING = false;
-    private static int draftCount = 6;
-    private static int draftCountTank = 2;
-    private static int draftCountDamage = 2;
-    private static int draftCountHealer = 2;
-    private static int numberOfTeams = 8; // default value for number of teams
+    private static int numberOfTeams = 0; //setting this to 8 will not let you choose team size
     private static int win = 0;
     private static int lose = 0; // win/lose/tie used to create a record for your team
     private static int tie = 0;
@@ -51,14 +47,22 @@ public class Main{
                     menu(input.nextLine());
                     continue;
                 }
-                if(draftCount != 6){
-                    if(draftingDatabase.remove(chosenPlayer)){
-                        print(draftingDatabase);
+                for(int i = 0; i<6; i++){
+                    for(User u : users){
+                        List<PlayerInfo> tempDatabase = new ArrayList<PlayerInfo>();
+                        boolean loop = true;
+                        while(loop){
+                            System.out.printf("%s, which player would you like to draft? (%d more tank, %d more healer, %d more damage)%n",u.getUserName(),u.getTankCount(), u.getHealerCount(), u.getDamageCount());            
+                            tempDatabase = u.draftNewPlayer(input.nextLine(),draftingDatabase);
+                            if(tempDatabase != null){
+                                draftingDatabase = tempDatabase;
+                                loop = false;
+                                print(draftingDatabase);
+                            }
+                        }
                     }
                 }
-                System.out.println(message);
-                System.out.printf("Which player would you like to draft? (%d more tank, %d more healer, %d more damage)%n",draftCountTank, draftCountHealer, draftCountDamage);            
-                draft(input.nextLine());
+                DRAFTING = false;
             }
             catch(InputMismatchException e){
                 System.out.println("Please enter a valid NUMBER");
@@ -73,7 +77,7 @@ public class Main{
     public static void menu(String choice){
         switch(choice){
             case("1"):
-            if(user==null){
+            if(users.size() == 0){
                 DRAFTING = true;
                 while(numberOfUsers < 1 || numberOfUsers > 23){
                     System.out.println("Up to 23 players are allowed.");
@@ -85,13 +89,12 @@ public class Main{
                         System.out.println("Not a valid number.");
                     }
                 }
-                for(int i = 1; i < numberOfUsers+1; i++){
+                for(int i = 0; i < numberOfUsers; i++){
                     String userName = "";
-                    System.out.printf("User %d, What is your team name?%n",i);
-                    users.add(new User(input.nextLine()));
-                }
-                for(User u : users){
-                    System.out.println(u.getUserName());
+                    System.out.printf("Player %d, What is your team name?%n",i+1);
+                    userInput = input.nextLine();
+                    user = new User(userInput);
+                    users.add(user);
                 }
                 print(database);
             }else{
@@ -117,61 +120,19 @@ public class Main{
         }
     }
 
-    public static void draft(String playerName){
-        boolean validPlayer = false;
-        for(PlayerInfo p : userTeam){
-            if (playerName.equalsIgnoreCase(p.getName())){
-                message = p.getName()+" is already on your team!";
-                return;
-            }
-        }
-        for(PlayerInfo p : draftingDatabase){
-            if (playerName.equalsIgnoreCase(p.getName())){
-                validPlayer = true;
-                switch(p.getRole()){
-                    case Healer:
-                    if(draftCountHealer > 0){
-                        userTeam.add(p);
-                        chosenPlayer = p;
-                        message = p.getName()+" has been added to your team!";
-                        draftCountHealer--; 
-                        draftCount--;
-                    }else{message = "You already have two healers!";}
-                    break;
-                    case Damage:
-                    if(draftCountDamage > 0){
-                        userTeam.add(p);
-                        chosenPlayer = p;
-                        message = p.getName()+" has been added to your team!";
-                        draftCountDamage--;   
-                        draftCount--;
-                    }else{message = "You already have two damages!";}
-                    break;
-                    case Tank:
-                    if(draftCountTank > 0){
-                        userTeam.add(p);
-                        chosenPlayer = p;
-                        message = p.getName()+" has been added to your team!";
-                        draftCountTank--;   
-                        draftCount--;
-                    }else{message = "You already have two tanks!";}
-                    break;
-                    default:
-                    System.out.println("This should not happen");
-                }
-            }
-        }
-        if(!validPlayer)
-            message = "Not a valid player!";
-        if(draftCount<=0){
-            DRAFTING = false;
-        }
-    }
-
     public static void viewTeam(){
-        if(user != null){
-            System.out.printf("%n%s%n",user.getUserName());
-            print(user.getTeam());
+        if(users.size() != 0){
+            System.out.printf("What is your team name?%n");
+            userInput = input.nextLine();
+            user = null;
+            for(User u : users){
+                if(u.getUserName().equalsIgnoreCase(userInput))
+                    user = u;
+            }
+            if(user != null){
+                System.out.printf("%n%s%n",user.getUserName());
+                print(user.getTeam());
+            }else{System.out.println("Team not found.");}
         }else{System.out.println("You must draft a team before you can view your team!");}
     }
 
@@ -301,7 +262,7 @@ public class Main{
         int c4 = r.nextInt(40)+1;
         int c5 = r.nextInt(40)+1;
         int c6 = r.nextInt(40)+1;
-        
+
         //int[] playerScores = new int[]{p1,p2,p3,p4,p5,p6};
         int userPointsScored = p1 + p2 + p3 + p4 + p5 + p6;
         int oppPointsScored = c1 + c2 + c3 + c4 + c5 + c6;
@@ -320,11 +281,13 @@ public class Main{
         }
         System.out.printf("User Record:\t%d-%d-%d%n",win,lose,tie);
     }    
-    
+
     public static void exit(){ 
         RUN = false;
-        if(user!=null)
-            SaveFileWriter.writeToFile(user.getUserName()+".csv",user);
+        if(users.size() != 0)
+            for(User u : users){
+                SaveFileWriter.writeToFile(u.getUserName()+".csv",u);
+            }
         System.out.println("...Exiting.");
     }
 

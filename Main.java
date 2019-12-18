@@ -151,14 +151,15 @@ public class Main{
             sortPlayers();
             break;
             case("4"):
-            if(user != null){
+            if(users.size() != 0){
                 simulateGame();
             }else{System.out.println("You must draft a team before you can play a game!");}
             break;  
             case("5"):
-            if(user != null){
+            if(users.size() != 0){
                 Tournament t = new Tournament(RUN);
             }else{System.out.println("You must draft a team before you can play a game!");}
+            break;
             case("6"):
             exit();
             break;
@@ -201,6 +202,7 @@ public class Main{
 
         boolean printDatabase = true;
         choice = input.nextInt();
+        input.nextLine();
         switch(choice){
             case(1): // alphabetical
             Collections.sort(database,new Comparator<PlayerInfo>(){

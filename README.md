@@ -1,6 +1,6 @@
 # Fantasy-Overwatch
 
-Group: Shane Tremel, Solomon Paprocki, Elon Musk
+Group: Shane Tremel, Solomon Paprocki
 
 **MVP**
 

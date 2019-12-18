@@ -13,7 +13,7 @@ Group: Shane Tremel, Solomon Paprocki, Elon Musk
 + Be able to save user team ✔
 + hold user teams ✔
 + Option to have multiple people in draft, or just solo (if solo, random select the rest of teams)  ✔
-+ Have a tournament generic class X
++ Have a tournament generic class ✔
 + Utilize a sort method that uses an anonymous class ✔
 
 **Stretch Goals**

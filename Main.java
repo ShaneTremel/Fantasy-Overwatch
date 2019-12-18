@@ -11,13 +11,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 public class Main{
-    static User user;
+    private static User user;
+    private static User cpu;
     private static Scanner input = new Scanner(System.in);
     private static List<PlayerInfo> database = new ArrayList<PlayerInfo>(loadFromFile("fantasyOverwatch.csv"));
-    private static List<PlayerInfo> userTeam = new ArrayList<PlayerInfo>(6);
     private static List<PlayerInfo> draftingDatabase = new ArrayList<PlayerInfo>(loadFromFile("fantasyOverwatch.csv"));
     private static List<PlayerInfo> playerSearch = new ArrayList<PlayerInfo>();
     private static PlayerInfo chosenPlayer;
+    private static PlayerInfo cpuChosenPlayer;
     private static List<User> users = new ArrayList<User>();
     private static String message = "";
     private static int numberOfUsers = 0;
@@ -32,29 +33,7 @@ public class Main{
         System.out.println("Welcome to Fantasy OverWatch!!"); 
         userInput = getInput("Do you already have a team?(Y or N)");
         if(userInput.equalsIgnoreCase("y")){
-            while(numberOfUsers < 1 || numberOfUsers > 22){
-                userInput = getInput("How many people were in your league?");
-                try{
-                    numberOfUsers = Integer.parseInt(userInput);
-                }
-                catch(Exception e){
-                    System.out.println("Not a valid number.");
-                }
-            }
-            for(int i = 0; i < numberOfUsers; i++){
-                boolean loop = true;
-                while(loop){
-                    String userName = "";
-                    System.out.printf("What was the name of Team %d?%n",i+1);
-                    userInput = input.nextLine();
-                    user = SaveFileReader.readFromFile(userInput+".csv",database);
-                    if(user!=null){
-                        users.add(user);
-                        loop = false;
-                    }
-                }
-            }
-
+            loadTeam();
         }
         while(RUN){
             try{
@@ -82,6 +61,7 @@ public class Main{
                             }
                         }
                     }
+                    cpuDraft();
                 }
                 DRAFTING = false;
             }
@@ -93,6 +73,46 @@ public class Main{
                 System.out.println("Please enter a valid input..."+e);
             }        
         }
+    }
+
+    public static void cpuDraft(){
+        user = users.get(0);
+        double maxElims = 0.0;
+        for(PlayerInfo p : draftingDatabase){
+            if(p.getEliminations() > maxElims && p.getRole() == user.getRecentRole()){
+                maxElims = p.getEliminations();
+                cpuChosenPlayer = p;
+            }
+        }
+        draftingDatabase = cpu.draftNewPlayer(cpuChosenPlayer.getName(),draftingDatabase);
+        print(draftingDatabase);
+        System.out.printf("The CPU chose %s!%n",cpuChosenPlayer.getName());
+    }
+
+    public static void loadTeam(){
+        while(numberOfUsers < 1 || numberOfUsers > 22){
+            userInput = getInput("How many people were in your league?");
+            try{
+                numberOfUsers = Integer.parseInt(userInput);
+            }
+            catch(Exception e){
+                System.out.println("Not a valid number.");
+            }
+        }
+        for(int i = 0; i < numberOfUsers; i++){
+            boolean loop = true;
+            while(loop){
+                String userName = "";
+                System.out.printf("What was the name of Team %d?%n",i+1);
+                userInput = input.nextLine();
+                user = SaveFileReader.readFromFile(userInput+".csv",database);
+                if(user!=null){
+                    users.add(user);
+                    loop = false;
+                }
+            }
+        }
+        cpu = SaveFileReader.readFromFile("cpu.csv",database);
     }
 
     public static void menu(String choice){
@@ -117,6 +137,7 @@ public class Main{
                     user = new User(userInput);
                     users.add(user);
                 }
+                cpu = new User("cpu");
                 print(database);
             }else{
                 System.out.println("You already drafted!");
@@ -149,6 +170,9 @@ public class Main{
             for(User u : users){
                 if(u.getUserName().equalsIgnoreCase(userInput))
                     user = u;
+            }
+            if(userInput.equalsIgnoreCase("cpu")){
+                user = cpu;
             }
             if(user != null){
                 System.out.printf("%n%s%n",user.getUserName());
@@ -305,10 +329,12 @@ public class Main{
 
     public static void exit(){ 
         RUN = false;
-        if(users.size() != 0)
+        if(users.size() != 0){
             for(User u : users){
                 SaveFileWriter.writeToFile(u.getUserName()+".csv",u);
             }
+            SaveFileWriter.writeToFile("cpu.csv",cpu);
+        }
         System.out.println("...Exiting.");
     }
 

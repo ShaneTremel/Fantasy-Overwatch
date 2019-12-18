@@ -3,6 +3,7 @@ import java.util.ArrayList;
 public class User implements AbstractUser{
     private String userName;
     private List<PlayerInfo> userTeam = new ArrayList<PlayerInfo>(6);
+    private Role recentRole;
     private int draftCount;
     private int draftCountTank;
     private int draftCountDamage;
@@ -19,11 +20,16 @@ public class User implements AbstractUser{
         draftCountDamage = 2;
         draftCountHealer = 2;
     }
+    
+    public Role getRecentRole(){
+        return recentRole;
+    }
 
     public List<PlayerInfo> getTeam(){
         return userTeam;
     }
 
+    @Override
     public String getUserName(){
         return userName;
     }
@@ -95,6 +101,7 @@ public class User implements AbstractUser{
             return null;
         }
         if(draftingDatabase.remove(chosenPlayer)){
+            recentRole = chosenPlayer.getRole();
             return draftingDatabase;
         }
         return null;
